@@ -1,0 +1,55 @@
+<div id="google_map"></div>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initiateGoogleMap"></script>
+
+<script type="text/javascript">
+var map;
+
+function initialize() {
+
+    var latlng = new google.maps.LatLng(0, 0);
+
+    var mapOptions = {
+        center: latlng,
+        zoom: 17,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        disableDefaultUI: true,
+        scrollwheel: false,	
+      	zoomControl:true,
+        zoomControlOptions: {
+          style: google.maps.ZoomControlStyle.LARGE
+        }
+    };
+
+    map = new google.maps.Map(document.getElementById('google_map'), mapOptions);
+
+    var geocoder = new google.maps.Geocoder();
+
+    var address = '{{ settings.google_map_address }}';
+    geocoder.geocode( { 'address': address}, function(results, status){
+		if (status == google.maps.GeocoderStatus.OK) {
+			map.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({map: map, position: results[0].geometry.location });
+        } else {
+			alert("Geocode was not successful for the following reason: " + status);
+        }
+    });
+
+    var styles = [
+        {
+          stylers: [
+              { saturation: -85 },
+              { lightness: 13 }
+          ]
+        },{
+          featureType: "road.highway",
+          elementType: "geometry",
+          stylers: [
+            { color: '#ffffff' }
+          ]
+        }
+    ];
+
+    map.setOptions({styles: styles});
+}
+</script>
